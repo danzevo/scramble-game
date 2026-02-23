@@ -1,17 +1,26 @@
+import { Inject, Injectable } from "@nestjs/common";
+import { GameSessionRepository } from "src/domain/repositories/game-session.repository";
+import { GAME_SESSION_REPOSITORY, WORD_REPOSITORY } from "src/domain/repositories/token";
 import { WordRepository } from "src/domain/repositories/word.repository";
-import { GameSessionStore } from "src/infrastructure/game-session.store";
 
+@Injectable()
 export class GetScrambleUseCase {
-    constructor(private wordRepo: WordRepository) {}
+    constructor(
+        @Inject(WORD_REPOSITORY)
+        private readonly wordRepo: WordRepository,
+
+        @Inject(GAME_SESSION_REPOSITORY)
+        private sessionRepo: GameSessionRepository
+    ) {}
 
     async execute(sessionId: string, difficulty: string) {
         const word = await this.wordRepo.getRandomWord(difficulty);
 
-        GameSessionStore.updateSession(sessionId, {
-            currentWord: word.text,
-            startTime: Date.now(),
-            answered: false,
-        });
+        const session = this.sessionRepo.getSession(sessionId);
+        if(!session) return { message: "Invalid session" };
+
+        session.startNewWord(word.text);
+        this.sessionRepo.save(sessionId, session);
 
         return {
             scrambled: await this.scramble(word.text)

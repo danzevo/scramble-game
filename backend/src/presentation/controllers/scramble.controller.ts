@@ -1,19 +1,20 @@
-import { Body, Controller, Get, Headers, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, Headers, Inject, Post, Query } from "@nestjs/common";
 import { CheckAnswerUseCase } from "src/application/use-cases/check-answer.usecase";
+import { CreateSessionUseCase } from "src/application/use-cases/create-session.usecase";
 import { GetScrambleUseCase } from "src/application/use-cases/get-scramble.usecase";
-import { WordRepositoryImpl } from "src/infrastructure/database/typeorm/word.repository.impl";
-import { GameSessionStore } from "src/infrastructure/game-session.store";
+// import { GameSessionRepository } from "src/domain/repositories/game-session.repository";
 
 @Controller("scramble")
 export class ScrambleController {
     constructor(
-        private wordRepo: WordRepositoryImpl
+        private readonly createSessionUseCase: CreateSessionUseCase,
+        private readonly getScrambleUseCase: GetScrambleUseCase,
+        private readonly checkAnswerUseCase: CheckAnswerUseCase,
     ) {}
 
     @Get('session')
     createSession() {
-        const sessionId = GameSessionStore.createSession();
-        return { sessionId}
+        return this.createSessionUseCase.execute();
     }
 
     @Get()
@@ -21,8 +22,7 @@ export class ScrambleController {
         @Headers('session-id') sessionId: string,
         @Query('difficulty') difficulty: string
     ) {
-        const useCase = new GetScrambleUseCase(this.wordRepo);
-        return useCase.execute(sessionId, difficulty || "easy");
+        return this.getScrambleUseCase.execute(sessionId, difficulty || "easy");
     }
 
     @Post('check')
@@ -30,7 +30,6 @@ export class ScrambleController {
         @Headers('session-id') sessionId: string,
         @Body() body: { answer: string }
     ) {
-        const useCase = new CheckAnswerUseCase();
-        return useCase.execute(sessionId,body.answer);
+        return this.checkAnswerUseCase.execute(sessionId,body.answer);
     }
 }

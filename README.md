@@ -1,47 +1,88 @@
-# Scramble Game (Vue 3 + NestJS + PostgreSQL)
+# 🧩 Scramble Word Game
 
-A modern word scramble game built with:
+### Vue 3 + NestJS + PostgreSQL
+
+A full‑stack word scramble game built with a modern frontend and a Clean
+Architecture--inspired backend.
+
+------------------------------------------------------------------------
+
+# 🚀 Tech Stack
+
+## Frontend
 
 -   Vue 3 (Composition API)
 -   Tailwind CSS
+-   Vite
+-   Confetti & animation effects
+-   Axios API service layer
+
+## Backend
+
 -   NestJS
+-   TypeScript
 -   TypeORM
 -   PostgreSQL
--   Timer, animations, and streak rewards
+-   Clean Architecture layering
+-   Rich Domain Model
 
 ------------------------------------------------------------------------
 
-## Features
+# 🎮 Game Features
 
 -   Random scrambled words by difficulty
 -   30-second countdown timer per word
--   Prevent multiple submissions for the same word
--   Score and streak system
+-   Score & streak tracking
+-   +10 points per correct answer
+-   +20 bonus every 3 streak
+-   Wrong answer resets streak
+-   Prevent duplicate submissions
 -   Shake animation on wrong answer
--   Confetti on streak milestones
--   Clean frontend structure
--   Backend structured with modules and TypeORM
+-   Confetti celebration on streak milestones
+-   Session-based gameplay
 
 ------------------------------------------------------------------------
 
-# Backend Folder Structure
+# 🏗 Backend Architecture
+
+The backend follows a layered architecture aligned with Clean
+Architecture principles.
+
+Dependency Direction:
+
+Presentation → Application → Domain\
+Infrastructure → Domain
+
+------------------------------------------------------------------------
+
+## 📂 Backend Folder Structure
 
     src/
      ├─ domain/
      │    ├─ entities/
-     │    │    └─ word.entity.ts
+     │    │    ├─ word.entity.ts
+     │    │    └─ game-session.entity.ts
      │    │
      │    └─ repositories/
-     │         └─ word.repository.ts
+     │         ├─ word.repository.ts
+     │         ├─ game-session.repository.ts
+     │         └─ token.ts
+     │
+     ├─ application/
+     │    └─ use-cases/
+     │         ├─ create-session.usecase.ts
+     │         ├─ get-scramble.usecase.ts
+     │         └─ check-answer.usecase.ts
      │
      ├─ infrastructure/
-     │    └─ database/
-     │    |    └─ typeorm/
-     │    |         ├─ typeorm.module.ts
-     │    |         ├─ word.repository.impl.ts
-     │    |         └─ entities/
-     │    |              └─ word.orm-entity.ts
-     |    |- game-session.store.ts
+     │    ├─ database/
+     │    │    └─ typeorm/
+     │    │         ├─ typeorm.module.ts
+     │    │         ├─ word.repository.impl.ts
+     │    │         └─ entities/
+     │    │              └─ word.orm-entity.ts
+     │    │
+     │    └─ game-session.store.ts
      │
      ├─ presentation/
      │    ├─ controllers/
@@ -50,60 +91,41 @@ A modern word scramble game built with:
      │    └─ dto/
      │         └─ check-answer.dto.ts
      │
-     │
      ├─ app.module.ts
      └─ main.ts
 
 ------------------------------------------------------------------------
 
-# Layer Explanation
+## 🧠 Layer Explanation
 
-## Domain
+### 1️⃣ Domain
 
--   `entities/word.entity.ts`\
-    Core business entity. No framework dependency.
+-   Contains core business entities
+-   `GameSession` entity owns scoring & streak logic
+-   Repository interfaces define contracts
+-   No framework dependencies
 
--   `repositories/word.repository.ts`\
-    Repository interface defining contract for data access.
+### 2️⃣ Application
 
-Pure business logic layer.
+-   Use cases orchestrate domain logic
+-   No infrastructure dependency
+-   Fully unit-testable
 
-------------------------------------------------------------------------
+### 3️⃣ Infrastructure
 
-## Infrastructure
+-   TypeORM implementation of repositories
+-   PostgreSQL database configuration
+-   In-memory `GameSessionStore` for session management
 
--   `database/typeorm/typeorm.module.ts`\
-    Database configuration using PostgreSQL.
+### 4️⃣ Presentation
 
--   `database/typeorm/entities/word.orm-entity.ts`\
-    TypeORM mapping for database table.
-
--   `database/typeorm/word.repository.impl.ts`\
-    Concrete implementation of the domain repository using TypeORM.
-
--   `game-session.store.ts`\
-    In-memory session management:
-    -   Tracks active sessions
-    -   Handles score & streak
-    -   Prevents duplicate submissions
-
-Depends on framework and database.
+-   HTTP controllers
+-   DTO validation
+-   Calls use cases only
 
 ------------------------------------------------------------------------
 
-## Presentation
-
--   `controllers/scramble.controller.ts`\
-    Handles HTTP endpoints.
-
--   `dto/check-answer.dto.ts`\
-    Request validation and data transfer object.
-
-Responsible for request/response layer.
-
-------------------------------------------------------------------------
-
-# Database Configuration
+# 🗄 Database Configuration
 
 Located in:
 
@@ -124,27 +146,47 @@ TypeOrmModule.forRoot({
 });
 ```
 
-No `.env` file is used in this setup.
-
 ------------------------------------------------------------------------
 
-# Frontend Structure
+# 🎨 Frontend Structure
 
     src/
      ├─ components/
      │    ├─ GameBoard.vue
      │    ├─ DifficultySelect.vue
      │    ├─ ScoreBoard.vue
+     │
      ├─ composables/
      │    └─ useGame.js
+     │
      ├─ services/
      │    └─ api.js
+     │
      ├─ App.vue
      └─ main.js
 
 ------------------------------------------------------------------------
 
-# Getting Started
+## 🧩 Frontend Architecture
+
+### Components
+
+UI rendering only. No heavy logic.
+
+### Composables
+
+`useGame.js` handles: - Timer logic - API calls - Score & streak state -
+Word fetching - Submission handling
+
+### Services
+
+`api.js` abstracts HTTP communication with backend.
+
+This keeps UI clean and logic reusable.
+
+------------------------------------------------------------------------
+
+# ▶ Getting Started
 
 ## Backend
 
@@ -152,7 +194,7 @@ Install dependencies:
 
     npm install
 
-Make sure PostgreSQL is running and the database exists:
+Create database:
 
     CREATE DATABASE scramble_game;
 
@@ -174,15 +216,37 @@ Run development server:
 
 ------------------------------------------------------------------------
 
-# Future Improvements
+# 🧪 Testing
 
--   Replace in-memory `game-session.store.ts` with Redis
--   Add authentication (JWT)
--   Add leaderboard
--   Introduce use-case layer for stricter Clean Architecture
--   Docker deployment
+-   Use cases are unit-testable
+-   Domain entity contains isolated business logic
+-   No need to boot NestJS for logic testing
 
 ------------------------------------------------------------------------
 
-This structure keeps the project clean, scalable, and aligned with
-layered architecture principles without unnecessary overengineering.
+# 📈 Future Improvements
+
+-   Replace in-memory session store with Redis
+-   Add JWT authentication
+-   Implement leaderboard
+-   Add integration tests
+-   Dockerize full stack
+-   Add CI/CD pipeline
+
+------------------------------------------------------------------------
+
+# 💡 Why This Project Matters
+
+This project demonstrates:
+
+-   Proper separation of concerns
+-   Clean backend layering
+-   Rich domain modeling
+-   Testable business logic
+-   Organized Vue 3 frontend structure
+-   Real full‑stack architecture thinking
+
+------------------------------------------------------------------------
+
+Built as a learning project focused on architecture clarity and
+practical backend design.

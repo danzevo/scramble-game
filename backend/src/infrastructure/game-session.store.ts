@@ -1,36 +1,22 @@
+import { GameSession } from 'src/domain/entities/game-session.entity';
+import { GameSessionRepository } from 'src/domain/repositories/game-session.repository';
 import { v4 as uuidv4 } from 'uuid';
 
-interface SessionData {
-    currentWord: string;
-    score: number;
-    streak: number;
-    startTime: number;
-    answered: boolean;
-}
+export class GameSessionStore implements GameSessionRepository{
+    private session: Map<string, GameSession> = new Map();
 
-export class GameSessionStore {
-    private static session: Map<string, SessionData> = new Map();
-
-    static createSession(): string {
+    createSession(): string {
         const id = uuidv4();
 
-        this.session.set(id, {
-            currentWord: "",
-            score: 0,
-            streak: 0,
-            startTime: 0,
-            answered: false,
-        })
-
+        this.session.set(id, new GameSession());
         return id;
     }
 
-    static getSession(sessionId: string): SessionData {
-        return this.session.get(sessionId);
+    getSession(sessionId: string): GameSession | null {
+        return this.session.get(sessionId) || null;
     }
 
-    static updateSession(sessionId: string, data: Partial<SessionData>) {
-        const session = this.session.get(sessionId);
-        this.session.set(sessionId, { ...session, ...data })
+    save(sessionId: string, session: GameSession): void {        
+        this.session.set(sessionId, session);
     }
 }
