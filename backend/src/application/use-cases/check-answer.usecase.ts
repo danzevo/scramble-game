@@ -6,8 +6,8 @@ import { GAME_SESSION_REPOSITORY } from "src/domain/repositories/token";
 export class CheckAnswerUseCase {
     constructor(@Inject(GAME_SESSION_REPOSITORY) private readonly sessionRepo: GameSessionRepository) {}
 
-    execute(sessionId: string, answer: string) {
-        const session = this.sessionRepo.getSession(sessionId);
+    async execute(sessionId: string, answer: string) {
+        const session = await this.sessionRepo.getSession(sessionId);
 
         if(!session) return { message: "Invalid session" };
         

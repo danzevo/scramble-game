@@ -5,18 +5,18 @@ import { v4 as uuidv4 } from 'uuid';
 export class GameSessionStore implements GameSessionRepository{
     private session: Map<string, GameSession> = new Map();
 
-    createSession(): string {
+    async createSession(): Promise<string> {
         const id = uuidv4();
 
         this.session.set(id, new GameSession());
         return id;
     }
 
-    getSession(sessionId: string): GameSession | null {
+    async getSession(sessionId: string): Promise<GameSession | null> {
         return this.session.get(sessionId) || null;
     }
 
-    save(sessionId: string, session: GameSession): void {        
+    async save(sessionId: string, session: GameSession): Promise<void> {        
         this.session.set(sessionId, session);
     }
 }

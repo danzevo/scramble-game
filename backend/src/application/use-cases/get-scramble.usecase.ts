@@ -16,11 +16,11 @@ export class GetScrambleUseCase {
     async execute(sessionId: string, difficulty: string) {
         const word = await this.wordRepo.getRandomWord(difficulty);
 
-        const session = this.sessionRepo.getSession(sessionId);
+        const session = await this.sessionRepo.getSession(sessionId);
         if(!session) return { message: "Invalid session" };
 
         session.startNewWord(word.text);
-        this.sessionRepo.save(sessionId, session);
+        await this.sessionRepo.save(sessionId, session);
 
         return {
             scrambled: await this.scramble(word.text)

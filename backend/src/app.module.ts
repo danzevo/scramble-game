@@ -9,9 +9,11 @@ import { GetScrambleUseCase } from './application/use-cases/get-scramble.usecase
 import { GameSessionStore } from './infrastructure/game-session.store';
 import { GAME_SESSION_REPOSITORY, WORD_REPOSITORY } from './domain/repositories/token';
 import { CreateSessionUseCase } from './application/use-cases/create-session.usecase';
+import { RedisModule } from './infrastructure/redis/redis.module';
+import { GameSessionRedisStore } from './infrastructure/game-session.redis.store';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, RedisModule],
   controllers: [ScrambleController],
   providers: [
     GetScrambleUseCase,
@@ -23,7 +25,7 @@ import { CreateSessionUseCase } from './application/use-cases/create-session.use
     },
     {
       provide: GAME_SESSION_REPOSITORY,
-      useClass: GameSessionStore,
+      useClass: GameSessionRedisStore,
     }
   ],
 })

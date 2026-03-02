@@ -57,71 +57,58 @@ Infrastructure → Domain
 
 ## 📂 Backend Folder Structure
 
-    src/
-     ├─ domain/
-     │    ├─ entities/
-     │    │    ├─ word.entity.ts
-     │    │    └─ game-session.entity.ts
-     │    │
-     │    └─ repositories/
-     │         ├─ word.repository.ts
-     │         ├─ game-session.repository.ts
-     │         └─ token.ts
-     │
-     ├─ application/
-     │    └─ use-cases/
-     │         ├─ create-session.usecase.ts
-     │         ├─ get-scramble.usecase.ts
-     │         └─ check-answer.usecase.ts
-     │
-     ├─ infrastructure/
-     │    ├─ database/
-     │    │    └─ typeorm/
-     │    │         ├─ typeorm.module.ts
-     │    │         ├─ word.repository.impl.ts
-     │    │         └─ entities/
-     │    │              └─ word.orm-entity.ts
-     │    │
-     │    └─ game-session.store.ts
-     │
-     ├─ presentation/
-     │    ├─ controllers/
-     │    │    └─ scramble.controller.ts
-     │    │
-     │    └─ dto/
-     │         └─ check-answer.dto.ts
-     │
-     ├─ app.module.ts
-     └─ main.ts
+```
+src/
+ ├─ domain/
+ │    ├─ entities/
+ │    │    ├─ word.entity.ts
+ │    │    └─ game-session.entity.ts
+ │    │
+ │    └─ repositories/
+ │         ├─ word.repository.ts
+ │         ├─ game-session.repository.ts
+ │         └─ token.ts
+ │
+ ├─ application/
+ │    └─ use-cases/
+ │         ├─ create-session.usecase.ts
+ │         ├─ get-scramble.usecase.ts
+ │         └─ check-answer.usecase.ts
+ │
+ ├─ infrastructure/
+ │    ├─ database/typeorm/
+ │    └─ redis/
+ │
+ ├─ presentation/
+ │    ├─ controllers/
+ │    └─ dto/
+ │
+ ├─ app.module.ts
+ └─ main.ts
+```
 
-------------------------------------------------------------------------
+---
 
-## 🧠 Layer Explanation
+# 🐳 Infrastructure Setup (Recommended)
 
-### 1️⃣ Domain
+This project uses Docker Compose to run:
 
--   Contains core business entities
--   `GameSession` entity owns scoring & streak logic
--   Repository interfaces define contracts
--   No framework dependencies
+- PostgreSQL (port 5433)
+- Redis (port 6379)
 
-### 2️⃣ Application
+## Start Infrastructure
 
--   Use cases orchestrate domain logic
--   No infrastructure dependency
--   Fully unit-testable
+From the backend folder:
 
-### 3️⃣ Infrastructure
+```
+docker compose up -d
+```
 
--   TypeORM implementation of repositories
--   PostgreSQL database configuration
--   In-memory `GameSessionStore` for session management
+Check running containers:
 
-### 4️⃣ Presentation
-
--   HTTP controllers
--   DTO validation
--   Calls use cases only
+```
+docker ps
+```
 
 ------------------------------------------------------------------------
 
@@ -147,6 +134,16 @@ TypeOrmModule.forRoot({
 ```
 
 ------------------------------------------------------------------------
+## Redis Configuration
+
+```
+new Redis({
+  host: '127.0.0.1',
+  port: 6379,
+});
+```
+
+---
 
 # 🎨 Frontend Structure
 
@@ -192,15 +189,21 @@ This keeps UI clean and logic reusable.
 
 Install dependencies:
 
-    npm install
+```
+npm install
+```
 
-Create database:
+Start infrastructure:
 
-    CREATE DATABASE scramble_game;
+```
+docker compose up -d
+```
 
 Run backend:
 
-    npm run start:dev
+```
+npm run start:dev
+```
 
 ------------------------------------------------------------------------
 
@@ -226,12 +229,11 @@ Run development server:
 
 # 📈 Future Improvements
 
--   Replace in-memory session store with Redis
--   Add JWT authentication
--   Implement leaderboard
--   Add integration tests
--   Dockerize full stack
--   Add CI/CD pipeline
+- Add JWT authentication
+- Implement leaderboard
+- Add integration tests
+- Dockerize backend service
+- Add CI/CD pipeline
 
 ------------------------------------------------------------------------
 

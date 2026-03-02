@@ -9,8 +9,8 @@ export class CreateSessionUseCase {
         private readonly sessionRepo: GameSessionRepository
     ) {}
 
-    execute() {
-        const sessionId = this.sessionRepo.createSession();
+    async execute() {
+        const sessionId = await this.sessionRepo.createSession();
         return { sessionId };
     }
 }
