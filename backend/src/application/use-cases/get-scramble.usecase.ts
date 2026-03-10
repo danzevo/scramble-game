@@ -2,6 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { GameSessionRepository } from "src/domain/repositories/game-session.repository";
 import { GAME_SESSION_REPOSITORY, WORD_REPOSITORY } from "src/domain/repositories/token";
 import { WordRepository } from "src/domain/repositories/word.repository";
+import { ScrambleService } from "src/domain/services/scramble.service";
 
 @Injectable()
 export class GetScrambleUseCase {
@@ -10,7 +11,9 @@ export class GetScrambleUseCase {
         private readonly wordRepo: WordRepository,
 
         @Inject(GAME_SESSION_REPOSITORY)
-        private sessionRepo: GameSessionRepository
+        private sessionRepo: GameSessionRepository,
+
+        private scrambleService: ScrambleService,
     ) {}
 
     async execute(sessionId: string, difficulty: string) {
@@ -23,14 +26,7 @@ export class GetScrambleUseCase {
         await this.sessionRepo.save(sessionId, session);
 
         return {
-            scrambled: await this.scramble(word.text)
+            scrambled: await this.scrambleService.scramble(word.text)
         }
-    }
-
-    async scramble(text: string) {
-        return text
-            .split("")
-            .sort(() => 0.5 - Math.random())
-            .join("");
     }
 }

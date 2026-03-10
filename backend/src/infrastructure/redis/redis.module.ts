@@ -7,7 +7,7 @@ import Redis from "ioredis";
             provide: 'REDIS_CLIENT',
             useFactory: () => {
                 return new Redis({
-                    host: '127.0.0.1',
+                    host: 'redis', //service name in docker-compose
                     port: 6379,
                 })
             }

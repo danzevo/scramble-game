@@ -6,13 +6,14 @@ import { WordOrmEntity } from "./entities/word.orm-entity";
     imports: [
         TypeOrmModule.forRoot({
             type: "postgres",
-            host: "127.0.0.1",
-            port: 5433,
+            host: "postgres", //service name in docker-compose
+            port: 5432,
             username: "postgres",
             password: "12345",
             database: "scramble_game",
             entities: [WordOrmEntity],
-            synchronize: true,
+            synchronize: false,
+            // migrations:['dist/migrations/*.js'],
             // logging:true,
         }),
         TypeOrmModule.forFeature([WordOrmEntity])

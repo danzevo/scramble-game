@@ -12,6 +12,9 @@ export class CheckAnswerUseCase {
         if(!session) return { message: "Invalid session" };
         
         try {
+            // const result = session.answer(answer);
+            // await this.sessionRepo.save(sessionId, session);
+            
             return session.answer(answer);
         } catch (error: any) {
             return { message: error.message };

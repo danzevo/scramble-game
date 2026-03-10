@@ -11,14 +11,32 @@ import { GAME_SESSION_REPOSITORY, WORD_REPOSITORY } from './domain/repositories/
 import { CreateSessionUseCase } from './application/use-cases/create-session.usecase';
 import { RedisModule } from './infrastructure/redis/redis.module';
 import { GameSessionRedisStore } from './infrastructure/game-session.redis.store';
+import { HealthController } from './presentation/controllers/health.controller';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
+import { ScrambleService } from './domain/services/scramble.service';
+import { TerminusModule } from '@nestjs/terminus';
 
 @Module({
-  imports: [DatabaseModule, RedisModule],
-  controllers: [ScrambleController],
+  imports: [
+          DatabaseModule, 
+          RedisModule,
+          TerminusModule,
+          ThrottlerModule.forRoot({
+            throttlers: [
+              {                
+                ttl: 60,
+                limit: 20,
+              },
+            ],
+          }),
+  ],
+  controllers: [ScrambleController, HealthController],
   providers: [
     GetScrambleUseCase,
     CheckAnswerUseCase,
     CreateSessionUseCase,
+    ScrambleService,
     {
       provide: WORD_REPOSITORY,
       useClass: WordRepositoryImpl,
@@ -26,6 +44,10 @@ import { GameSessionRedisStore } from './infrastructure/game-session.redis.store
     {
       provide: GAME_SESSION_REPOSITORY,
       useClass: GameSessionRedisStore,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     }
   ],
 })

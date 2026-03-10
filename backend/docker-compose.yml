@@ -1,4 +1,17 @@
 services:
+  api:
+    build: .
+    container_name: scramble-api
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run start:dev
+    depends_on:
+      - postgres
+      - redis
+
   postgres:
     image: postgres:15
     container_name: scramble-postgres
