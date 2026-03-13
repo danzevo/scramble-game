@@ -6,7 +6,7 @@ import { ScrambleController } from './presentation/controllers/scramble.controll
 import { WordRepositoryImpl } from './infrastructure/database/typeorm/word.repository.impl';
 import { CheckAnswerUseCase } from './application/use-cases/check-answer.usecase';
 import { GetScrambleUseCase } from './application/use-cases/get-scramble.usecase';
-import { GameSessionStore } from './infrastructure/game-session.store';
+// import { GameSessionStore } from './infrastructure/game-session.store';
 import { GAME_SESSION_REPOSITORY, WORD_REPOSITORY } from './domain/repositories/token';
 import { CreateSessionUseCase } from './application/use-cases/create-session.usecase';
 import { RedisModule } from './infrastructure/redis/redis.module';
@@ -16,12 +16,14 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { ScrambleService } from './domain/services/scramble.service';
 import { TerminusModule } from '@nestjs/terminus';
+import { LoggerModule } from './infrastructure/logger/logger.module';
 
 @Module({
   imports: [
           DatabaseModule, 
           RedisModule,
           TerminusModule,
+          LoggerModule,
           ThrottlerModule.forRoot({
             throttlers: [
               {                

@@ -1,9 +1,15 @@
 # 🧩 Scramble Word Game
 
-### Vue 3 + NestJS + PostgreSQL
+A full‑stack **Word Scramble Game** built with:
 
-A full‑stack word scramble game built with a modern frontend and a Clean
-Architecture--inspired backend.
+-   **Vue 3 (Composition API)** frontend
+-   **NestJS** backend
+-   **PostgreSQL + Redis**
+-   **Clean Architecture principles**
+
+The project demonstrates real-world backend design patterns including
+domain-driven logic, layered architecture, caching with Redis,
+migrations, seeding, logging, and rate limiting.
 
 ------------------------------------------------------------------------
 
@@ -23,8 +29,11 @@ Architecture--inspired backend.
 -   TypeScript
 -   TypeORM
 -   PostgreSQL
--   Clean Architecture layering
--   Rich Domain Model
+-   Redis
+-   Winston logging
+-   Class Validator
+-   Jest testing
+-   Throttler rate limiting
 
 ------------------------------------------------------------------------
 
@@ -45,46 +54,71 @@ Architecture--inspired backend.
 
 # 🏗 Backend Architecture
 
-The backend follows a layered architecture aligned with Clean
-Architecture principles.
+The backend follows a **Clean Architecture inspired layering**.
 
-Dependency Direction:
+Dependency direction:
 
 Presentation → Application → Domain\
 Infrastructure → Domain
+
+This ensures business logic remains independent of frameworks.
 
 ------------------------------------------------------------------------
 
 ## 📂 Backend Folder Structure
 
 ```
-src/
- ├─ domain/
- │    ├─ entities/
- │    │    ├─ word.entity.ts
- │    │    └─ game-session.entity.ts
- │    │
- │    └─ repositories/
- │         ├─ word.repository.ts
- │         ├─ game-session.repository.ts
- │         └─ token.ts
- │
- ├─ application/
- │    └─ use-cases/
- │         ├─ create-session.usecase.ts
- │         ├─ get-scramble.usecase.ts
- │         └─ check-answer.usecase.ts
- │
- ├─ infrastructure/
- │    ├─ database/typeorm/
- │    └─ redis/
- │
- ├─ presentation/
- │    ├─ controllers/
- │    └─ dto/
- │
- ├─ app.module.ts
- └─ main.ts
+├─ src/
+│
+│  ├─ main.ts
+│  ├─ app.module.ts
+│  ├─ domain/
+│  │  ├─ entities/
+│  │  │   ├─ word.entity.ts
+│  │  │   ├─ game-session.entity.ts
+│  │  │   └─ game-session.spec.ts
+│  │  ├─ repositories/
+│  │  │   ├─ word.repository.ts
+│  │  │   ├─ game-session.repository.ts
+│  │  │   └─ token.ts
+│  │  └─ services/
+│  │      └─ scramble.service.ts
+│  ├─ application/
+│  │  └─ use-cases/
+│  │      ├─ create-session.usecase.ts
+│  │      ├─ get-scramble.usecase.ts
+│  │      └─ check-answer.usecase.ts
+│  ├─ infrastructure/
+│  │  ├─ database/
+│  │  │  └─ typeorm/
+│  │  │      ├─ entities/
+│  │  │      │   └─ word.orm-entity.ts
+│  │  │      ├─ migrations/
+│  │  │      │   └─ 1710000000000-init.ts
+│  │  │      ├─ seeds/
+│  │  │      │   └─ seed-words.ts
+│  │  │      ├─ typeorm.module.ts
+│  │  │      ├─ typeorm.datasource.ts
+│  │  │      └─ word.repository.impl.ts
+│  │  ├─ redis/
+│  │  │   └─ redis.module.ts
+│  │  ├─ session/
+│  │  │   └─ game-session.redis.store.ts
+│  │  └─ logger/
+│  │      ├─ logger.module.ts
+│  │      └─ logger.config.ts
+│  ├─ presentation/
+│  │  ├─ controllers/
+│  │  │   ├─ scramble.controller.ts
+│  │  │   └─ health.controller.ts
+│  │  └─ dto/
+│  │      ├─ get-scramble.dto.ts
+│  │      └─ check-answer.dto.ts
+│  ├─ common/
+│  │  ├─ filters/
+│  │  │   └─ global-exception.filter.ts
+├─ app.module.ts
+└─ main.ts
 ```
 
 ---
@@ -109,7 +143,11 @@ Check running containers:
 ```
 docker ps
 ```
+Rebuild containers:
 
+``` bash
+docker compose up --build
+```
 ------------------------------------------------------------------------
 
 # 🗄 Database Configuration
@@ -123,7 +161,7 @@ Example:
 ``` ts
 TypeOrmModule.forRoot({
   type: 'postgres',
-  host: 'localhost',
+  host: "postgres", //service name in docker-compose
   port: 5432,
   username: 'postgres',
   password: 'yourpassword',
@@ -132,13 +170,85 @@ TypeOrmModule.forRoot({
   synchronize: true, // development only
 });
 ```
+Database uses **PostgreSQL with TypeORM**.
+
+Tables are managed using **migrations**.
+
+## Generate Migration
+
+npm run migration:generate
+
+## Run Migration
+
+npm run migration:run
+
+------------------------------------------------------------------------
+
+# 🌱 Seed Data
+
+To populate the database with default words:
+
+npm run seed
+
+This inserts sample words for:
+
+-   easy
+-   medium
+-   hard
+
+Used for development and testing.
+
+------------------------------------------------------------------------
+
+# 🧾 Logging
+
+The backend uses **Winston logger** with:
+
+-   colored console logs
+-   daily rotating log files
+
+Logs are stored in:
+
+logs/
+
+Example log:
+
+2026-03-13T10:20:11 \[GetScrambleUseCase\] info: Fetching word for
+difficulty easy
+
+------------------------------------------------------------------------
+
+# ⚡ Rate Limiting
+
+The API includes **request throttling** using:
+
+@nestjs/throttler
+
+Example protection:
+
+-   Prevents spam requests
+-   Limits API abuse
+
+------------------------------------------------------------------------
+
+# ❤️ Health Check
+
+Health endpoint available:
+
+GET /health
+
+Returns:
+
+{ "status": "ok" }
+
+Useful for deployment and monitoring.
 
 ------------------------------------------------------------------------
 ## Redis Configuration
 
 ```
 new Redis({
-  host: '127.0.0.1',
+  host: 'redis', //service name in docker-compose
   port: 6379,
 });
 ```
@@ -229,11 +339,12 @@ Run development server:
 
 # 📈 Future Improvements
 
-- Add JWT authentication
-- Implement leaderboard
-- Add integration tests
-- Dockerize backend service
-- Add CI/CD pipeline
+-   JWT authentication
+-   Leaderboard system
+-   Multiplayer sessions
+-   WebSocket gameplay
+-   CI/CD pipeline
+-   Kubernetes deployment
 
 ------------------------------------------------------------------------
 
@@ -241,14 +352,15 @@ Run development server:
 
 This project demonstrates:
 
+-   Clean Architecture in NestJS
+-   Domain-driven design thinking
 -   Proper separation of concerns
--   Clean backend layering
--   Rich domain modeling
--   Testable business logic
--   Organized Vue 3 frontend structure
--   Real full‑stack architecture thinking
+-   Redis session management
+-   Logging & monitoring
+-   Migration & seed workflow
+-   Scalable backend structure
 
 ------------------------------------------------------------------------
 
-Built as a learning project focused on architecture clarity and
-practical backend design.
+Built as a **learning project focused on backend architecture and system
+design**.
