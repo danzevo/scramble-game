@@ -1,14 +1,18 @@
-import { Body, Controller, Get, Headers, Inject, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, Headers, Logger, Post, Query } from "@nestjs/common";
 import { CheckAnswerUseCase } from "src/application/use-cases/check-answer.usecase";
 import { CreateSessionUseCase } from "src/application/use-cases/create-session.usecase";
 import { GetScrambleUseCase } from "src/application/use-cases/get-scramble.usecase";
 import { GetScrambleDto } from "../dto/get-scramble.dto";
 import { CheckAnswerDto } from "../dto/check-answer.dto";
 import { Throttle } from "@nestjs/throttler";
+import { ApiBody, ApiHeader, ApiQuery, ApiTags } from "@nestjs/swagger";
 // import { GameSessionRepository } from "src/domain/repositories/game-session.repository";
 
+@ApiTags('Scramble')
 @Controller("scramble")
 export class ScrambleController {
+    private readonly logger = new Logger(ScrambleController.name);
+
     constructor(
         private readonly createSessionUseCase: CreateSessionUseCase,
         private readonly getScrambleUseCase: GetScrambleUseCase,
@@ -17,9 +21,12 @@ export class ScrambleController {
 
     @Get('session')
     createSession() {
+        this.logger.log('Creating new game session');
         return this.createSessionUseCase.execute();
     }
 
+    @ApiHeader({ name: 'session-id', required: true })
+    @ApiQuery({name: 'difficulty', required: false, example: 'easy' })
     @Get()
     @Throttle({ default: { limit: 25, ttl: 60000 }})
     getScramble(
@@ -29,6 +36,8 @@ export class ScrambleController {
         return this.getScrambleUseCase.execute(sessionId, query.difficulty);
     }
 
+    @ApiHeader({ name: 'session-id', required: true })
+    @ApiBody({ schema: { example: { answer: 'apple'}}})
     @Post('check')
     check(
         @Headers('session-id') sessionId: string,

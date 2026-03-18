@@ -1,0 +1,288 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/scramble/session": {
+      "get": {
+        "operationId": "ScrambleController_createSession",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Scramble"
+        ]
+      }
+    },
+    "/scramble": {
+      "get": {
+        "operationId": "ScrambleController_getScramble",
+        "parameters": [
+          {
+            "name": "session-id",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "difficulty",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "easy"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Scramble"
+        ]
+      }
+    },
+    "/scramble/check": {
+      "post": {
+        "operationId": "ScrambleController_check",
+        "parameters": [
+          {
+            "name": "session-id",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "answer": "apple"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Scramble"
+        ]
+      }
+    },
+    "/health/live": {
+      "get": {
+        "operationId": "HealthController_live",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "operationId": "HealthController_ready",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "HealthController_check",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The Health Check is successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "info": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": {},
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The Health Check is not successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "info": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": {
+                        "redis": {
+                          "status": "down",
+                          "message": "Could not connect"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      },
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "example": {
+                        "database": {
+                          "status": "up"
+                        },
+                        "redis": {
+                          "status": "down",
+                          "message": "Could not connect"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                          "status"
+                        ],
+                        "properties": {
+                          "status": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "info": {
+    "title": "Scramble Game API",
+    "description": "API documentation for Scramble Word Game",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "scramble",
+      "description": ""
+    }
+  ],
+  "servers": [],
+  "components": {
+    "schemas": {}
+  }
+}

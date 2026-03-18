@@ -17,6 +17,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { ScrambleService } from './domain/services/scramble.service';
 import { TerminusModule } from '@nestjs/terminus';
 import { LoggerModule } from './infrastructure/logger/logger.module';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
@@ -24,6 +26,10 @@ import { LoggerModule } from './infrastructure/logger/logger.module';
           RedisModule,
           TerminusModule,
           LoggerModule,
+          ServeStaticModule.forRoot({
+            rootPath: join(__dirname, '..', 'docs'),
+            serveRoot: '/docs',
+          }),
           ThrottlerModule.forRoot({
             throttlers: [
               {                

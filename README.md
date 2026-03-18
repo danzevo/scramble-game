@@ -34,6 +34,9 @@ migrations, seeding, logging, and rate limiting.
 -   Class Validator
 -   Jest testing
 -   Throttler rate limiting
+-   Swagger (OpenAPI)
+-   Stoplight Elements
+-   Grafana + Loki + Promtail
 
 ------------------------------------------------------------------------
 
@@ -68,6 +71,9 @@ This ensures business logic remains independent of frameworks.
 ## 📂 Backend Folder Structure
 
 ```
+├─ logs/
+├─ monitoring/
+│   └─ promtail-config.yml
 ├─ src/
 │
 │  ├─ main.ts
@@ -120,34 +126,73 @@ This ensures business logic remains independent of frameworks.
 ├─ app.module.ts
 └─ main.ts
 ```
+# ▶ Getting Started
 
----
+## Backend
 
-# 🐳 Infrastructure Setup (Recommended)
+Install dependencies:
 
-This project uses Docker Compose to run:
+```
+npm install
+```
 
-- PostgreSQL (port 5433)
-- Redis (port 6379)
-
-## Start Infrastructure
-
-From the backend folder:
+Start infrastructure:
 
 ```
 docker compose up -d
 ```
-
-Check running containers:
-
+for dev : 
 ```
-docker ps
-```
-Rebuild containers:
+docker compose up -d postgres redis loki promtail grafana
 
-``` bash
-docker compose up --build
+Services: - PostgreSQL → 5433 - Redis → 6379 - Grafana → 3001 - Loki →
+3100
 ```
+Run backend:
+------------------------------------------------------------------------
+
+## 📦 Scripts
+
+    npm run start:dev
+    npm run migration:generate
+    npm run migration:run
+    npm run seed
+    npm run test
+
+------------------------------------------------------------------------
+
+## 📚 API Documentation
+
+### Swagger
+
+    http://localhost:3000/swagger
+
+### Stoplight UI
+
+    http://localhost:3000/docs
+
+------------------------------------------------------------------------
+
+## 📊 Monitoring & Logging
+
+### Architecture
+
+    NestJS → Winston → Promtail → Loki → Grafana
+
+### Logs Folder
+
+    logs/
+
+### Promtail Config
+
+    monitoring/promtail-config.yml
+
+### View Logs
+
+Grafana → Explore → query:
+
+    {job="scramble-api"}
+
 ------------------------------------------------------------------------
 
 # 🗄 Database Configuration
@@ -172,23 +217,11 @@ TypeOrmModule.forRoot({
 ```
 Database uses **PostgreSQL with TypeORM**.
 
-Tables are managed using **migrations**.
-
-## Generate Migration
-
-npm run migration:generate
-
-## Run Migration
-
-npm run migration:run
-
 ------------------------------------------------------------------------
 
 # 🌱 Seed Data
 
 To populate the database with default words:
-
-npm run seed
 
 This inserts sample words for:
 
@@ -290,30 +323,6 @@ Word fetching - Submission handling
 `api.js` abstracts HTTP communication with backend.
 
 This keeps UI clean and logic reusable.
-
-------------------------------------------------------------------------
-
-# ▶ Getting Started
-
-## Backend
-
-Install dependencies:
-
-```
-npm install
-```
-
-Start infrastructure:
-
-```
-docker compose up -d
-```
-
-Run backend:
-
-```
-npm run start:dev
-```
 
 ------------------------------------------------------------------------
 
