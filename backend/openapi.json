@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/scramble/session": {
+    "/api/scramble/session": {
       "get": {
         "operationId": "ScrambleController_createSession",
         "parameters": [],
@@ -15,7 +15,7 @@
         ]
       }
     },
-    "/scramble": {
+    "/api/scramble": {
       "get": {
         "operationId": "ScrambleController_getScramble",
         "parameters": [
@@ -46,7 +46,7 @@
         ]
       }
     },
-    "/scramble/check": {
+    "/api/scramble/check": {
       "post": {
         "operationId": "ScrambleController_check",
         "parameters": [
@@ -81,7 +81,7 @@
         ]
       }
     },
-    "/health/live": {
+    "/api/health/live": {
       "get": {
         "operationId": "HealthController_live",
         "parameters": [],
@@ -92,7 +92,7 @@
         }
       }
     },
-    "/health/ready": {
+    "/api/health/ready": {
       "get": {
         "operationId": "HealthController_ready",
         "parameters": [],
@@ -103,7 +103,7 @@
         }
       }
     },
-    "/health": {
+    "/api/health": {
       "get": {
         "operationId": "HealthController_check",
         "parameters": [],

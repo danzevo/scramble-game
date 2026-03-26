@@ -1,4 +1,4 @@
-const BASE = 'http://localhost:3000';
+const BASE = 'http://localhost:3000/api';
 
 export async function createSession() {
     const res = await fetch(`${BASE}/scramble/session`);
