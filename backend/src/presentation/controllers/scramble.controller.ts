@@ -19,18 +19,24 @@ export class ScrambleController {
         private readonly checkAnswerUseCase: CheckAnswerUseCase,
     ) {}
 
-    @Get('session')
-    createSession() {
-        this.logger.log('Creating new game session');
-        return this.createSessionUseCase.execute();
+    @Post('session')
+    @ApiHeader({ name: 'user-id', required: true })
+    async createSession(
+        @Headers('user-id') userId: string,
+    ) {
+        this.logger.log('Creating new game session for user: ' + userId);
+        const sessionId = await this.createSessionUseCase.execute(userId);
+        return { sessionId };
     }
 
     @ApiHeader({ name: 'session-id', required: true })
+    @ApiHeader({ name: 'user-id', required: true })
     @ApiQuery({name: 'difficulty', required: false, example: 'easy' })
     @Get()
     @Throttle({ default: { limit: 25, ttl: 60000 }})
     getScramble(
         @Headers('session-id') sessionId: string,
+        @Headers('user-id') userId: string,
         @Query() query: GetScrambleDto
     ) {
         return this.getScrambleUseCase.execute(sessionId, query.difficulty);

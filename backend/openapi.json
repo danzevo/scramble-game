@@ -2,11 +2,20 @@
   "openapi": "3.0.0",
   "paths": {
     "/api/scramble/session": {
-      "get": {
+      "post": {
         "operationId": "ScrambleController_createSession",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "user-id",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
-          "200": {
+          "201": {
             "description": ""
           }
         },
@@ -21,6 +30,14 @@
         "parameters": [
           {
             "name": "session-id",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user-id",
             "required": true,
             "in": "header",
             "schema": {
@@ -264,6 +281,37 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/leaderboard": {
+      "get": {
+        "operationId": "LeaderboardController_getTop",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/leaderboard/{userId}/rank": {
+      "get": {
+        "operationId": "LeaderboardController_getRank",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
           }
         }
       }

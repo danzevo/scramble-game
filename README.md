@@ -82,10 +82,12 @@ This ensures business logic remains independent of frameworks.
 │  │  ├─ entities/
 │  │  │   ├─ word.entity.ts
 │  │  │   ├─ game-session.entity.ts
-│  │  │   └─ game-session.spec.ts
+│  │  │   ├─ game-session.spec.ts
+│  │  │   └─ leaderboard.entity.ts
 │  │  ├─ repositories/
 │  │  │   ├─ word.repository.ts
 │  │  │   ├─ game-session.repository.ts
+│  │  │   ├─ leaderboard.repository.ts
 │  │  │   └─ token.ts
 │  │  └─ services/
 │  │      └─ scramble.service.ts
@@ -93,19 +95,23 @@ This ensures business logic remains independent of frameworks.
 │  │  └─ use-cases/
 │  │      ├─ create-session.usecase.ts
 │  │      ├─ get-scramble.usecase.ts
-│  │      └─ check-answer.usecase.ts
+│  │      ├─ check-answer.usecase.ts
+│  │      └─ get-leaderboard.usecase.ts
 │  ├─ infrastructure/
 │  │  ├─ database/
 │  │  │  └─ typeorm/
 │  │  │      ├─ entities/
-│  │  │      │   └─ word.orm-entity.ts
+│  │  │      │   ├─ word.orm-entity.ts
+│  │  │      │   └─ leaderboard.orm-entity.ts
 │  │  │      ├─ migrations/
-│  │  │      │   └─ 1710000000000-init.ts
+│  │  │      │   ├─ 1710000000000-init.ts
+│  │  │      │   └─ 1775016406134-create-leaderboard-table.ts
 │  │  │      ├─ seeds/
 │  │  │      │   └─ seed-words.ts
 │  │  │      ├─ typeorm.module.ts
 │  │  │      ├─ typeorm.datasource.ts
-│  │  │      └─ word.repository.impl.ts
+│  │  │      ├─ word.repository.impl.ts
+│  │  │      └─ leaderboard.repository.impl.ts
 │  │  ├─ redis/
 │  │  │   └─ redis.module.ts
 │  │  ├─ session/
@@ -116,10 +122,12 @@ This ensures business logic remains independent of frameworks.
 │  ├─ presentation/
 │  │  ├─ controllers/
 │  │  │   ├─ scramble.controller.ts
-│  │  │   └─ health.controller.ts
+│  │  │   ├─ health.controller.ts
+│  │  │   └─ leaderboard.controller.ts
 │  │  └─ dto/
 │  │      ├─ get-scramble.dto.ts
-│  │      └─ check-answer.dto.ts
+│  │      ├─ check-answer.dto.ts
+│  │      └─ leaderboard.dto.ts
 │  ├─ common/
 │  │  ├─ filters/
 │  │  │   └─ global-exception.filter.ts
@@ -153,11 +161,23 @@ Run backend:
 
 ## 📦 Scripts
 
-    npm run start:dev
-    npm run migration:generate
-    npm run migration:run
-    npm run seed
-    npm run test
+    npm run start:dev          # Start development server
+    npm run migration:generate -- <migration-name>  # Generate new migration
+    npm run migration:run      # Run pending migrations
+    npm run seed               # Seed database with initial data
+    npm run test               # Run tests
+
+### Migration Examples
+
+Generate a new migration:
+```
+npm run migration:generate -- src/infrastructure/database/typeorm/migrations/add-user-table
+```
+
+Run migrations:
+```
+npm run migration:run
+```
 
 ------------------------------------------------------------------------
 

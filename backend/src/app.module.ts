@@ -7,7 +7,7 @@ import { WordRepositoryImpl } from './infrastructure/database/typeorm/word.repos
 import { CheckAnswerUseCase } from './application/use-cases/check-answer.usecase';
 import { GetScrambleUseCase } from './application/use-cases/get-scramble.usecase';
 // import { GameSessionStore } from './infrastructure/game-session.store';
-import { GAME_SESSION_REPOSITORY, WORD_REPOSITORY } from './domain/repositories/token';
+import { GAME_SESSION_REPOSITORY, LEADERBOARD_REPOSITORY, WORD_REPOSITORY } from './domain/repositories/token';
 import { CreateSessionUseCase } from './application/use-cases/create-session.usecase';
 import { RedisModule } from './infrastructure/redis/redis.module';
 import { GameSessionRedisStore } from './infrastructure/game-session.redis.store';
@@ -19,9 +19,15 @@ import { TerminusModule } from '@nestjs/terminus';
 import { LoggerModule } from './infrastructure/logger/logger.module';
 import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { LeaderboardOrmEntity } from './infrastructure/database/typeorm/entities/leaderboard.orm-entity';
+import { LeaderboardController } from './presentation/controllers/leaderboard.controller';
+import { LeaderboardRepositoryImpl } from './infrastructure/database/typeorm/leaderboard.repository.impl';
+import { GetLeaderboardUseCase } from './application/use-cases/get-leaderboard.usecase';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
+          TypeOrmModule.forFeature([LeaderboardOrmEntity]),
           DatabaseModule, 
           RedisModule,
           TerminusModule,
@@ -39,11 +45,12 @@ import { ServeStaticModule } from '@nestjs/serve-static';
             ],
           }),
   ],
-  controllers: [ScrambleController, HealthController],
+  controllers: [ScrambleController, HealthController, LeaderboardController],
   providers: [
     GetScrambleUseCase,
     CheckAnswerUseCase,
     CreateSessionUseCase,
+    GetLeaderboardUseCase,
     ScrambleService,
     {
       provide: WORD_REPOSITORY,
@@ -56,7 +63,11 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    {
+      provide: LEADERBOARD_REPOSITORY, 
+      useClass: LeaderboardRepositoryImpl,
     }
-  ],
+  ]
 })
 export class AppModule {}

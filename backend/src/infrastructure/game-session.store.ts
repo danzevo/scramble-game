@@ -7,8 +7,6 @@ export class GameSessionStore implements GameSessionRepository{
 
     async createSession(): Promise<string> {
         const id = uuidv4();
-
-        this.session.set(id, new GameSession());
         return id;
     }
 

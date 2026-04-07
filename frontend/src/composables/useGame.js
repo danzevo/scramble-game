@@ -34,7 +34,7 @@ export function useGame() {
 
     async function init() {
         const data = await api.createSession();
-        sessionId.value = data.sessionId;
+        sessionId.value = data;
     }
 
     async function loadWord(difficulty) {
@@ -67,4 +67,13 @@ export function useGame() {
     }
 
     return { init, loadWord, submit, scrambled, score, streak, result, timeLeft, startTimer, stopTimer };
+}
+
+export function getOrCreateUserId() {
+    let userId = localStorage.getItem('userId');
+    if(!userId) {
+        userId = crypto.randomUUID();
+        localStorage.setItem('userId', userId);
+    }
+    return userId;
 }

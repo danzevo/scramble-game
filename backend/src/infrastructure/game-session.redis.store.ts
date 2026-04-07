@@ -12,15 +12,6 @@ export class GameSessionRedisStore implements GameSessionRepository {
 
     async createSession(): Promise<string> {
         const id = uuidv4();
-        const session = new GameSession();
-
-        await this.redis.set(
-            id,
-            JSON.stringify(session),
-            'EX',
-            60 * 60,
-        );
-
         return id;
     }
 
@@ -31,7 +22,19 @@ export class GameSessionRedisStore implements GameSessionRepository {
 
         const parsed = JSON.parse(data);
 
-        return Object.assign(new GameSession(), parsed);
+
+        if(!parsed.userId) {
+            parsed.userId = 'anonymous';
+        }
+
+        return new GameSession(
+            parsed.userId,
+            parsed.currentWord,
+            parsed.startTime,
+            parsed.score,
+            parsed.streak,
+            parsed.answered
+        );
     }
 
     async save(sessionId: string, session: GameSession): Promise<void> {

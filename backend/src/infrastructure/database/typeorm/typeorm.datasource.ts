@@ -1,5 +1,6 @@
 import { DataSource } from "typeorm";
 import { WordOrmEntity } from "./entities/word.orm-entity";
+import { LeaderboardOrmEntity } from "./entities/leaderboard.orm-entity";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -8,7 +9,7 @@ export const AppDataSource = new DataSource({
     username: "postgres",
     password: "12345",
     database: "scramble_game",
-    entities: [WordOrmEntity],
+    entities: [WordOrmEntity, LeaderboardOrmEntity],
     migrations: [
         'src/infrastructure/database/typeorm/migrations/*.ts',
     ],

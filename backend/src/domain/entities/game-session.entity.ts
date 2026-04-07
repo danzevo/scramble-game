@@ -1,5 +1,6 @@
 export class GameSession {
     constructor(
+        public userId: string,
         public currentWord: string | null = null,
         public startTime: number | null = null,
         public score: number = 0,

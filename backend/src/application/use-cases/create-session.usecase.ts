@@ -1,4 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
+import { GameSession } from "src/domain/entities/game-session.entity";
 import { GameSessionRepository } from "src/domain/repositories/game-session.repository";
 import { GAME_SESSION_REPOSITORY } from "src/domain/repositories/token";
 
@@ -9,8 +10,10 @@ export class CreateSessionUseCase {
         private readonly sessionRepo: GameSessionRepository
     ) {}
 
-    async execute() {
+    async execute(userId: string): Promise<string> {
         const sessionId = await this.sessionRepo.createSession();
-        return { sessionId };
+        const session = new GameSession(userId);
+        await this.sessionRepo.save(sessionId, session);
+        return sessionId;
     }
 }
