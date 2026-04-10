@@ -4,13 +4,13 @@ import { LeaderBoardRepository } from "src/domain/repositories/leaderboard.repos
 import { LeaderboardEntryDto } from "../dto/leaderboard.dto";
 import { LEADERBOARD_REPOSITORY } from "src/domain/repositories/token";
 
-@Controller('leaderboard')
+@Controller('scramble/leaderboard')
 export class LeaderboardController {
     constructor(
         private readonly getLeaderboardUseCase: GetLeaderboardUseCase,
         @Inject(LEADERBOARD_REPOSITORY)
         private readonly leaderboardRepository: LeaderBoardRepository,
-    ) {}
+    ) { }
 
     @Get()
     async getTop(

@@ -32,3 +32,17 @@ export async function checkAnswer(sessionId, answer) {
 
     return res.json();
 }
+
+export async function getLeaderboard(limit = 10) {
+    const res = await fetch(`${BASE}/scramble/leaderboard?limit=${limit}`, {
+        headers: { 'user-id': getOrCreateUserId() }
+    });
+    return res.json();
+}
+
+export async function getMyRank() {
+    const res = await fetch(`${BASE}/scramble/leaderboard/${getOrCreateUserId()}/rank`, {
+        headers: { 'user-id': getOrCreateUserId() }
+    });
+    return res.json();
+}

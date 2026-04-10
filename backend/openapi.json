@@ -285,7 +285,7 @@
         }
       }
     },
-    "/api/leaderboard": {
+    "/api/scramble/leaderboard": {
       "get": {
         "operationId": "LeaderboardController_getTop",
         "parameters": [],
@@ -296,7 +296,7 @@
         }
       }
     },
-    "/api/leaderboard/{userId}/rank": {
+    "/api/scramble/leaderboard/{userId}/rank": {
       "get": {
         "operationId": "LeaderboardController_getRank",
         "parameters": [
