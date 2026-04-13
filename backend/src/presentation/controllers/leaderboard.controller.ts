@@ -1,8 +1,9 @@
-import { Controller, Get, Inject, Param, Query } from "@nestjs/common";
+import { Body, Controller, Get, Headers, Inject, Param, Post, Query } from "@nestjs/common";
 import { GetLeaderboardUseCase } from "src/application/use-cases/get-leaderboard.usecase";
 import { LeaderBoardRepository } from "src/domain/repositories/leaderboard.repository";
 import { LeaderboardEntryDto } from "../dto/leaderboard.dto";
 import { LEADERBOARD_REPOSITORY } from "src/domain/repositories/token";
+import { SetUsernameUseCase } from "src/application/use-cases/set-username.usecase";
 
 @Controller('scramble/leaderboard')
 export class LeaderboardController {
@@ -10,6 +11,7 @@ export class LeaderboardController {
         private readonly getLeaderboardUseCase: GetLeaderboardUseCase,
         @Inject(LEADERBOARD_REPOSITORY)
         private readonly leaderboardRepository: LeaderBoardRepository,
+        private readonly setUsernameUseCase: SetUsernameUseCase,
     ) { }
 
     @Get()
@@ -29,5 +31,14 @@ export class LeaderboardController {
         if (!player) throw new Error('Player not found');
         const rank = await this.leaderboardRepository.getRank(userId);
         return { ...player, rank };
+    }
+
+    @Post('user')
+    async setUsername(
+        @Headers('user-id') userId: string,
+        @Body('username') username: string
+    ) {
+        await this.setUsernameUseCase.execute(userId, username);
+        return { success: true, username: username };
     }
 }

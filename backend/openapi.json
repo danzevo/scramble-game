@@ -315,6 +315,26 @@
           }
         }
       }
+    },
+    "/api/scramble/leaderboard/user": {
+      "post": {
+        "operationId": "LeaderboardController_setUsername",
+        "parameters": [
+          {
+            "name": "user-id",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        }
+      }
     }
   },
   "info": {

@@ -24,26 +24,27 @@ import { LeaderboardController } from './presentation/controllers/leaderboard.co
 import { LeaderboardRepositoryImpl } from './infrastructure/database/typeorm/leaderboard.repository.impl';
 import { GetLeaderboardUseCase } from './application/use-cases/get-leaderboard.usecase';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SetUsernameUseCase } from './application/use-cases/set-username.usecase';
 
 @Module({
   imports: [
-          TypeOrmModule.forFeature([LeaderboardOrmEntity]),
-          DatabaseModule, 
-          RedisModule,
-          TerminusModule,
-          LoggerModule,
-          ServeStaticModule.forRoot({
-            rootPath: join(__dirname, '..', 'docs'),
-            serveRoot: '/docs',
-          }),
-          ThrottlerModule.forRoot({
-            throttlers: [
-              {                
-                ttl: 60,
-                limit: 20,
-              },
-            ],
-          }),
+    TypeOrmModule.forFeature([LeaderboardOrmEntity]),
+    DatabaseModule,
+    RedisModule,
+    TerminusModule,
+    LoggerModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'docs'),
+      serveRoot: '/docs',
+    }),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60,
+          limit: 20,
+        },
+      ],
+    }),
   ],
   controllers: [ScrambleController, HealthController, LeaderboardController],
   providers: [
@@ -52,6 +53,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     CreateSessionUseCase,
     GetLeaderboardUseCase,
     ScrambleService,
+    SetUsernameUseCase,
     {
       provide: WORD_REPOSITORY,
       useClass: WordRepositoryImpl,
@@ -65,9 +67,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       useClass: ThrottlerGuard,
     },
     {
-      provide: LEADERBOARD_REPOSITORY, 
+      provide: LEADERBOARD_REPOSITORY,
       useClass: LeaderboardRepositoryImpl,
     }
   ]
 })
-export class AppModule {}
+export class AppModule { }

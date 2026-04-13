@@ -46,3 +46,16 @@ export async function getMyRank() {
     });
     return res.json();
 }
+
+export async function setUsername(username) {
+    const res = await fetch(`${BASE}/scramble/leaderboard/user`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'user-id': getOrCreateUserId(),
+        },
+        body: JSON.stringify({ username: username })
+    })
+
+    return res.json();
+}
