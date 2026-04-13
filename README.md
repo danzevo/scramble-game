@@ -42,6 +42,8 @@ migrations, seeding, logging, and rate limiting.
 
 # 🎮 Game Features
 
+-   **User Profiles**: Persistent username tracking mapped to gameplay sessions
+-   **Global Leaderboard**: Track, climb, and compare scores with top players using a Vue Modal
 -   Random scrambled words by difficulty
 -   30-second countdown timer per word
 -   Score & streak tracking
@@ -146,16 +148,16 @@ npm install
 
 Start infrastructure:
 
-```
+```bash
 docker compose up -d
 ```
-for dev : 
-```
-docker compose up -d postgres redis loki promtail grafana
 
-Services: - PostgreSQL → 5433 - Redis → 6379 - Grafana → 3001 - Loki →
-3100
+For development: 
+```bash
+docker compose up -d postgres redis loki promtail grafana
 ```
+> Services: PostgreSQL → 5432 | Redis → 6379 | Grafana → 3001 | Loki → 3100
+
 Run backend:
 ------------------------------------------------------------------------
 
@@ -315,6 +317,7 @@ new Redis({
      │    ├─ GameBoard.vue
      │    ├─ DifficultySelect.vue
      │    ├─ ScoreBoard.vue
+     │    ├─ Leaderboard.vue
      │
      ├─ composables/
      │    └─ useGame.js
@@ -369,7 +372,6 @@ Run development server:
 # 📈 Future Improvements
 
 -   JWT authentication
--   Leaderboard system
 -   Multiplayer sessions
 -   WebSocket gameplay
 -   CI/CD pipeline
